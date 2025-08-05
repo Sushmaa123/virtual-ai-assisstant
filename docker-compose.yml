@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: backend-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - MONGODB_URL=mongodb+srv://sushma:Sushma2001@virtual-ai.972oca5.mongodb.net/?retryWrites=true&w=majority&appName=virtual-ai
+      - JWT_SECRET=mysecretkey123
+      - CLOUDINARY_CLOUD_NAME=dwcqiquga
+      - CLOUDINARY_API_KEY=451456176349683
+      - CLOUDINARY_API_SECRET=jLMW7E2LGxvaemb4N4sNdONxjsc
+      - GEMINI_API_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyC58N4plFiK09htQsJgHivQ7jFrtJp4TZo
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-app
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
