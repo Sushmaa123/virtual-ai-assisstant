@@ -8,21 +8,28 @@ import cookieParser from "cookie-parser"
 import userRouter from "./routes/user.routes.js"
 import geminiResponse from "./gemini.js"
 
+const app = express()
 
-const app=express()
 app.use(cors({
-    origin:"http://localhost:5173",
-    credentials:true
+    origin: process.env.VITE_API_BASE_URL || "http://localhost:3000",
+    credentials: true
 }))
-const port=process.env.PORT || 5000
+
+const port = process.env.PORT || 8000
+
 app.use(express.json())
 app.use(cookieParser())
-app.use("/api/auth",authRouter)
-app.use("/api/user",userRouter)
 
-
-app.listen(port,()=>{
-    connectDb()
-    console.log("server started")
+// Root route
+app.get("/", (req, res) => {
+    res.send("Backend is running 🚀")
 })
 
+// API routes
+app.use("/api/auth", authRouter)
+app.use("/api/user", userRouter)
+
+app.listen(port, () => {
+    connectDb()
+    console.log(`Server started on port ${port}`)
+})
